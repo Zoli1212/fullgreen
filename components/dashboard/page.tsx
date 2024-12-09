@@ -6,13 +6,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-;
+
 
 import { unstable_noStore as noStore } from "next/cache";
 import prisma from "@/utils/db";
-import { DashboardStats } from "@/components/dashboard/DashboardStats";
-import { Chart } from "@/components/dashboard/Chart";
-import { RecentSales } from "@/components/dashboard/RecentSales";
+import { DashboardStats } from "./DashboardStats";
+import { Chart } from "./Chart";
+import { RecentSales } from "./RecentSales";
 
 async function getData() {
   const now = new Date();
