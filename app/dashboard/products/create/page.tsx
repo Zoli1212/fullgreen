@@ -108,6 +108,7 @@ function ProductCreateRoute({}: Props) {
 
             <div className="flex flex-col gap-3">
               <Label>Images</Label>
+              <input type="hidden" value={images} key={fields.images.key} name={fields.images.name} defaultValue={fields.images.initialValue as any} />
               {images.length > 0 ? (
                 <div className="flex gap-5">
                   {images.map((image, index) => (
@@ -141,6 +142,8 @@ function ProductCreateRoute({}: Props) {
                   }}
                 />
               )}
+
+              <p className="text-red-500">{ fields.images.errors }</p>
             </div>
 
           </div>
