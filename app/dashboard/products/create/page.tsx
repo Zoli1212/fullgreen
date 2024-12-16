@@ -17,6 +17,7 @@ import { parseWithZod } from "@conform-to/zod";
 import { productSchema } from "@/lib/zodSchemas";
 import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
+import { categories } from "@/lib/categories";
 
 
 
@@ -104,6 +105,27 @@ function ProductCreateRoute({}: Props) {
               </Select>
               <p className='text-red-500'>{fields.status.errors}</p>
 
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Label>Category</Label>
+              <Select
+                key={fields.category.key}
+                name={fields.category.name}
+                defaultValue={fields.category.initialValue}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((category: any) => (
+                    <SelectItem key={category.id} value={category.name}>
+                      {category.title}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-red-500">{fields.category.errors}</p>
             </div>
 
             <div className="flex flex-col gap-3">
