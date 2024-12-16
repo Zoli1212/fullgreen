@@ -18,6 +18,7 @@ import { productSchema } from "@/lib/zodSchemas";
 import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
 import { categories } from "@/lib/categories";
+import { SubmitButton } from "@/components/SubmitButtons";
 
 
 
@@ -172,7 +173,7 @@ function ProductCreateRoute({}: Props) {
 
         </CardContent>
         <CardFooter>
-          <Button>Create Product</Button>
+          <SubmitButton text='SAVE' variant='outline'/>
 
         </CardFooter>
       </Card>
