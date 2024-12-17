@@ -24,15 +24,18 @@ import Link from "next/link";
 import { SubmitButton } from "../SubmitButtons";
 import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
-import { UploadDropzone } from "@/app/lib/uplaodthing";
-import { categories } from "@/app/lib/categories";
+
+
 import { useState } from "react";
 import { useFormState } from "react-dom";
-import { createProduct, editProduct } from "@/app/actions";
+
 import { useForm } from "@conform-to/react";
 import { parseWithZod } from "@conform-to/zod";
 import { productSchema } from "@/lib/zodSchemas";
 import { type $Enums } from "@prisma/client";
+import { editProduct } from "@/actions/actions";
+import { categories } from "@/lib/categories";
+import { UploadDropzone } from "@/lib/uploadthing";
 
 interface iAppProps {
   data: {
@@ -161,7 +164,7 @@ export function EditForm({ data }: iAppProps) {
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category) => (
+                  {categories.map((category: any) => (
                     <SelectItem key={category.id} value={category.name}>
                       {category.title}
                     </SelectItem>

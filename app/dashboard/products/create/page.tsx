@@ -170,10 +170,9 @@ function ProductCreateRoute({}: Props) {
             </div>
 
           </div>
-
         </CardContent>
         <CardFooter>
-          <SubmitButton text='SAVE' variant='outline'/>
+          <SubmitButton text='SAVE PRODUCT' variant='secondary'/>
 
         </CardFooter>
       </Card>

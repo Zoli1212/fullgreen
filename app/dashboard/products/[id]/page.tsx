@@ -1,10 +1,30 @@
+import { EditForm } from '@/components/dashboard/EditForm'
+import prisma from '@/utils/db'
+import { notFound } from 'next/navigation'
 import React from 'react'
 
-type Props = {}
+async function getData(productId: string){
 
-function EditRoute({}: Props) {
+  const data = await prisma.product.findUnique({
+    where: {
+      id: productId
+    }
+  })
+
+  if(!data){
+    return notFound()
+
+  }
+
+  return data
+}
+
+async function EditRoute({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
+  const data = await getData(id)
   return (
-    <div>EditRoute</div>
+    <EditForm data={data} />
   )
 }
 
