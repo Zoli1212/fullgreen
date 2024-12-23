@@ -15,8 +15,8 @@ const links = [
         href: '/dashboard/products'
     },
     {
-        name: 'Categories',
-        href: '/dashboard/categories'
+        name: 'Banners',
+        href: '/dashboard/banner'
     },
 
    
