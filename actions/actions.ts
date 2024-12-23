@@ -4,8 +4,12 @@ import { redirect, RedirectType } from "next/navigation";
 import { parseWithZod} from '@conform-to/zod'
 ;
 import { parse } from "path";
-import { productSchema } from "@/lib/zodSchemas";
+import { bannerSchema, productSchema } from "@/lib/zodSchemas";
 import prisma from "@/utils/db";
+import { revalidatePath } from "next/cache";
+import { redis } from "@/lib/redis";
+import { Cart } from "@/lib/interfaces";
+
 
 export async function createProduct(prevState: unknown, formData: FormData){
 
@@ -99,38 +103,113 @@ export async function deleteProduct(formData: FormData) {
     redirect("/dashboard/products");
   }
 
-  export async function createBanner(prevState: unknown, formData: FormData){
-
-    const { getUser } = getKindeServerSession()
-
-    const user = await getUser()
-
-    if(!user || user === null || !user.id || user.email !== "prosight11@gmail.com"){
-        return redirect('/')
+  export async function createBanner(prevState: any, formData: FormData) {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+  
+    if (!user || user.email !== "prosight11@gmail.com") {
+      return redirect("/");
     }
-
-    const submission = parseWithZod(formData, { schema: productSchema })
-
-    if(submission.status !== "success"){
-        return submission.reply()
+  
+    const submission = parseWithZod(formData, {
+      schema: bannerSchema,
+    });
+  
+    if (submission.status !== "success") {
+      return submission.reply();
     }
+  
+    await prisma.banner.create({
+      data: {
+        title: submission.value.title,
+        imageString: submission.value.imageString,
+      },
+    });
+  
+    redirect("/dashboard/banner");
+  }
+  
+  export async function deleteBanner(formData: FormData) {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+  
+    if (!user || user.email !== "prosight11@gmail.com") {
+      return redirect("/");
+    }
+  
+    await prisma.banner.delete({
+      where: {
+        id: formData.get("bannerId") as string,
+      },
+    });
+  
+    redirect("/dashboard/banner");
+  }
 
-
-    const flattenUrls = submission.value.images.flatMap((url: string) => url.split(',').map(url => url.trim()))
-
-
-    await prisma.product.create({
-        data: {
-            name: submission.value.name,
-            description: submission.value.description,
-            status: submission.value.status,
-            price: submission.value.price,
-            images: flattenUrls,
-            isFeatured: submission.value.isFeatured,
-            category: submission.value.category
+  export async function addItem(productId: string) {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+  
+    if (!user) {
+      return redirect("/");
+    }
+  
+    let cart: Cart | null = await redis.get(`cart-${user.id}`);
+  
+    const selectedProduct = await prisma.product.findUnique({
+      select: {
+        id: true,
+        name: true,
+        price: true,
+        images: true,
+      },
+      where: {
+        id: productId,
+      },
+    });
+  
+    if (!selectedProduct) {
+      throw new Error("No product with this id");
+    }
+    let myCart = {} as Cart;
+  
+    if (!cart || !cart.items) {
+      myCart = {
+        userId: user.id,
+        items: [
+          {
+            price: selectedProduct.price,
+            id: selectedProduct.id,
+            imageString: selectedProduct.images[0],
+            name: selectedProduct.name,
+            quantity: 1,
+          },
+        ],
+      };
+    } else {
+      let itemFound = false;
+  
+      myCart.items = cart.items.map((item: any) => {
+        if (item.id === productId) {
+          itemFound = true;
+          item.quantity += 1;
         }
-    })
-
-    redirect('/dashboard/products')
-
-}
+  
+        return item;
+      });
+  
+      if (!itemFound) {
+        myCart.items.push({
+          id: selectedProduct.id,
+          imageString: selectedProduct.images[0],
+          name: selectedProduct.name,
+          price: selectedProduct.price,
+          quantity: 1,
+        });
+      }
+    }
+  
+    await redis.set(`cart-${user.id}`, myCart);
+  
+    revalidatePath("/", "layout");
+  }
