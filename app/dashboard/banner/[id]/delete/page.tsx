@@ -28,7 +28,7 @@ export default async function DeleteBannerRoute({ params }: { params: Promise<{ 
           </Button>
           <form action={deleteBanner}>
             <input type="hidden" name="bannerId" value={id} />
-            <SubmitButton variant="destructive" text="Delete Banner" />
+            <SubmitButton variant="destructive" text="Delete Product" />
           </form>
         </CardFooter>
       </Card>
