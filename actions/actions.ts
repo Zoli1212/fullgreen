@@ -275,6 +275,17 @@ export async function deleteProduct(formData: FormData) {
           process.env.NODE_ENV === "development"
             ? "http://localhost:3000/payment/cancel"
             : "",
+        billing_address_collection: "required", 
+        shipping_address_collection: {
+            allowed_countries: ["US", "CA"], 
+        },
+        tax_id_collection: {
+          enabled: true,
+        },
+        automatic_tax: {
+          enabled: true, // Engedélyezi az adószámítást
+        },
+            
         metadata: {
           userId: user.id,
         },
