@@ -124,7 +124,6 @@ function ProductCreateRoute() {
               </Select>
               <p className="text-red-500">{fields.category.errors}</p>
             </div>
-qqqqqqhnb
             <div className="flex flex-col gap-3">
               <Label>Images</Label>
               <input type="hidden" value={images} key={fields.images.key} name={fields.images.name} defaultValue={fields.images.initialValue as string[]} />
