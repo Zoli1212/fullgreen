@@ -12,7 +12,10 @@ import { Cart } from "@/lib/interfaces";
 import { stripe } from "@/lib/stripe";
 import Stripe from "stripe";
 
-
+interface SubscriptionItem {
+  priceId: string;
+  name: string; // Ha van másik mező, például a név
+}
 export async function createProduct(prevState: unknown, formData: FormData){
 
     const { getUser } = getKindeServerSession()
@@ -259,6 +262,7 @@ export async function deleteProduct(formData: FormData) {
             product_data: {
               name: item.name,
               images: [item.imageString],
+              tax_code: "txcd_99999999",
             },
           },
           quantity: item.quantity,
@@ -277,8 +281,37 @@ export async function deleteProduct(formData: FormData) {
             : "",
         billing_address_collection: "required", 
         shipping_address_collection: {
-            allowed_countries: ["US", "CA"], 
-        },
+          allowed_countries: [
+              "AT", // Ausztria
+              "BE", // Belgium
+              "BG", // Bulgária
+              "CY", // Ciprus
+              "CZ", // Csehország
+              "DE", // Németország
+              "DK", // Dánia
+              "EE", // Észtország
+              "ES", // Spanyolország
+              "FI", // Finnország
+              "FR", // Franciaország
+              "GR", // Görögország
+              "HR", // Horvátország
+              "HU", // Magyarország
+              "IE", // Írország
+              "IT", // Olaszország
+              "LT", // Litvánia
+              "LU", // Luxemburg
+              "LV", // Lettország
+              "MT", // Málta
+              "NL", // Hollandia
+              "PL", // Lengyelország
+              "PT", // Portugália
+              "RO", // Románia
+              "SE", // Svédország
+              "SI", // Szlovénia
+              "SK"  // Szlovákia
+          ],
+      },
+      
         tax_id_collection: {
           enabled: true,
         },
@@ -295,3 +328,52 @@ export async function deleteProduct(formData: FormData) {
     }
   }
   
+
+  export async function checkOutSubscription() {
+    const { getUser } = getKindeServerSession();
+    const user = await getUser();
+
+    if (!user) {
+        return redirect("/");
+    }
+
+    // Feltételezzük, hogy a felhasználónak egyetlen előfizetési csomagja van
+    const subscriptionItem: SubscriptionItem | null = await redis.get(`subscription-item-${user.id}`);
+
+    if (!subscriptionItem) {
+        return redirect("/subscriptions"); // Ha nincs előfizetési elem, irányítsd a felhasználót az előfizetési oldalra
+    }
+
+    const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [
+        {
+            price: subscriptionItem.priceId, // Az ár ID-ja, amit Stripe-ban hoztál létre az előfizetéshez
+            quantity: 1, // Általában előfizetésnél a mennyiség 1
+        },
+    ];
+
+    const session = await stripe.checkout.sessions.create({
+        mode: "subscription", // Az előfizetési mód beállítása
+        line_items: lineItems,
+        success_url:
+            process.env.NODE_ENV === "development"
+                ? "http://localhost:3000/subscription/success"
+                : "https://your-production-domain.com/subscription/success",
+        cancel_url:
+            process.env.NODE_ENV === "development"
+                ? "http://localhost:3000/subscription/cancel"
+                : "https://your-production-domain.com/subscription/cancel",
+        billing_address_collection: "required", // Számlázási cím kötelező
+        tax_id_collection: {
+            enabled: true, // Adószám gyűjtés engedélyezése
+        },
+        automatic_tax: {
+            enabled: true, // Automatikus adószámítás engedélyezése
+        },
+        metadata: {
+            userId: user.id,
+            subscriptionName: subscriptionItem.name, // Opcionális metaadat
+        },
+    });
+
+    return redirect(session.url!); // Átirányítás a Stripe fizetési oldalára
+}
