@@ -24,7 +24,7 @@ export default async function BagRoute() {
 
   let totalPrice = 0;
 
-  cart?.items.forEach((item: any) => {
+  cart?.items.forEach((item) => {
     totalPrice += item.price * item.quantity;
   });
 
@@ -50,7 +50,7 @@ export default async function BagRoute() {
         </div>
       ) : (
         <div className="flex flex-col gap-y-10">
-          {cart?.items.map((item: any) => (
+          {cart?.items.map((item) => (
             <div key={item.id} className="flex">
               <div className="w-24 h-24 sm:w-32 sm:h-32 relative">
                 <Image

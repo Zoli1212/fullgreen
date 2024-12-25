@@ -18,8 +18,18 @@ interface iAppProps {
   }[];
 }
 
-const aggregateData = (data: any) => {
-  const aggregated = data.reduce((acc: any, curr: any) => {
+type DataItem = {
+  date: string;
+  revenue: number;
+};
+
+type AggregatedItem = {
+  date: string;
+  revenue: number;
+};
+
+const aggregateData = (data: DataItem[]): AggregatedItem[] => {
+  const aggregated = data.reduce<Record<string, number>>((acc, curr) => {
     if (acc[curr.date]) {
       acc[curr.date] += curr.revenue;
     } else {

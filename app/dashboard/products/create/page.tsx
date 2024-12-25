@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { UploadDropzone } from "@/lib/uploadthing";
 
 
-import { ChevronLeftIcon, Upload, XIcon } from "lucide-react";
+import { ChevronLeftIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import React, { useActionState, useState } from "react";
 import {useForm } from '@conform-to/react'
@@ -22,10 +22,9 @@ import { SubmitButton } from "@/components/SubmitButtons";
 
 
 
-type Props = {};
 
 
-function ProductCreateRoute({}: Props) {
+function ProductCreateRoute() {
   const [images, setImages] = useState<string[]>([]);
   const [lastResult, action] = useActionState(createProduct, undefined )
   const handleDelete = (index: number) => {
@@ -119,7 +118,7 @@ function ProductCreateRoute({}: Props) {
                   <SelectValue placeholder="Select Category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((category: any) => (
+                  {categories.map((category) => (
                     <SelectItem key={category.id} value={category.name}>
                       {category.title}
                     </SelectItem>
@@ -131,7 +130,7 @@ function ProductCreateRoute({}: Props) {
 
             <div className="flex flex-col gap-3">
               <Label>Images</Label>
-              <input type="hidden" value={images} key={fields.images.key} name={fields.images.name} defaultValue={fields.images.initialValue as any} />
+              <input type="hidden" value={images} key={fields.images.key} name={fields.images.name} defaultValue={fields.images.initialValue as string[]} />
               {images.length > 0 ? (
                 <div className="flex gap-5">
                   {images.map((image, index) => (

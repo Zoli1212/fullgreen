@@ -24,7 +24,7 @@ export async function Hero() {
   return (
     <Carousel>
       <CarouselContent>
-        {data.map((item: any) => (
+        {data.map((item) => (
           <CarouselItem key={item.id}>
             <div className="relative h-[60vh] lg:h-[80vh]">
               <Image

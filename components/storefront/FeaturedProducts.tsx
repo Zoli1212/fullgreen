@@ -43,7 +43,7 @@ async function LoadFeaturedproducts() {
 
   return (
     <div className="mt-5 grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      {data.map((item: any) => (
+      {data.map((item) => (
         <ProductCard key={item.id} item={item} />
       ))}
     </div>
