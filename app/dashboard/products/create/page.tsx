@@ -21,9 +21,6 @@ import { categories } from "@/lib/categories";
 import { SubmitButton } from "@/components/SubmitButtons";
 
 
-
-
-
 function ProductCreateRoute() {
   const [images, setImages] = useState<string[]>([]);
   const [lastResult, action] = useActionState(createProduct, undefined )
@@ -127,10 +124,10 @@ function ProductCreateRoute() {
               </Select>
               <p className="text-red-500">{fields.category.errors}</p>
             </div>
-
+qqqqqqhnb
             <div className="flex flex-col gap-3">
               <Label>Images</Label>
-              <input type="hidden" value={images} key={fields.images.key} name={fields.images.name} defaultValue={fields.images.initialValue as string[]} />
+              <input type="hidden" value={images} key={fields.images.key} name={fields.images.name} defaultValue={fields.images.initialValue as string[tgqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq]} />
               {images.length > 0 ? (
                 <div className="flex gap-5">
                   {images.map((image, index) => (

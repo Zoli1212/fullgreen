@@ -274,11 +274,11 @@ export async function deleteProduct(formData: FormData) {
         success_url:
           process.env.NODE_ENV === "development"
             ? "http://localhost:3000/payment/success"
-            : "",
+            : "https://fullgreen-plum.vercel.app/payment/success",
         cancel_url:
           process.env.NODE_ENV === "development"
             ? "http://localhost:3000/payment/cancel"
-            : "",
+            : "https://fullgreen-plum.vercel.app/payment/cancel",
         billing_address_collection: "required", 
         shipping_address_collection: {
           allowed_countries: [
